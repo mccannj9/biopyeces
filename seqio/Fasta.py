@@ -5,7 +5,8 @@ import re
 
 class Fasta(object):
     def __init__(self, filename):
-        self.file = open(filename, 'r')
+        self.filename = filename
+        self.file = open(filename)
         self.buffer = ''
         while not self.buffer.startswith('>'):
             self.consume()
@@ -37,11 +38,22 @@ class Fasta(object):
     def __iter__(self):
         return self
 
+    def __enter__(self):
+        if self.file is None:
+            raise ValueError("I/O operation on closed Fasta")
+        return self
+
+    def __exit__(self, *args):
+        self.close()
+
     def close(self):
         self.file.close()
 
     def reset(self):
         if not(self.file.closed):
             self.file.seek(0)
-            self.exhausted = False
             self.__next__()
+        else:
+            self.file = open(self.filename)
+
+        self.exhausted = False
