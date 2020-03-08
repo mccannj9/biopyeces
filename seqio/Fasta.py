@@ -11,6 +11,7 @@ class Fasta(object):
         while not self.buffer.startswith('>'):
             self.consume()
         self.exhausted = False
+        self.seqs_consumed = 0
 
     def consume(self):
         self.buffer = self.file.readline()
@@ -33,18 +34,12 @@ class Fasta(object):
                 self.exhausted = True
                 break
 
+        self.seqs_consumed += 1
+
         return desc, re.sub(r'\s+', '', ''.join(seq))
 
     def __iter__(self):
         return self
-
-    def __enter__(self):
-        if self.file is None:
-            raise ValueError("I/O operation on closed Fasta")
-        return self
-
-    def __exit__(self, *args):
-        self.close()
 
     def close(self):
         self.file.close()
@@ -57,3 +52,6 @@ class Fasta(object):
             self.file = open(self.filename)
 
         self.exhausted = False
+
+    def __str__(self):
+        return f"Filename = {self.filename}, Seqs read so far = {self.seqs_consumed}"
