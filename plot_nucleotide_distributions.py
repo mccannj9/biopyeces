@@ -75,10 +75,10 @@ for x in range(data.shape[0]):
     for y in range(data.shape[1]):
         ax[x].step(np.arange(args.sequence_length), data[x, y, :], label=labels[y])
 
-    # ax.xticks(fontsize=10, rotation=45)
     for tick in ax[x].xaxis.get_major_ticks():
         tick.label.set_fontsize(6)
         tick.label.set_rotation(45)
+
     for tick in ax[x].yaxis.get_major_ticks():
         tick.label.set_fontsize(6)
 
