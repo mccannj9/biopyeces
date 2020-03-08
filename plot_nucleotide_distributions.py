@@ -8,6 +8,7 @@ import numpy as np
 
 from seqio.Fastq import PairedFastq
 
+plt.style.use('seaborn-whitegrid')
 
 desc = """
 
@@ -58,11 +59,30 @@ data /= n
 print(data)
 
 fig, ax = plt.subplots(nrows=1, ncols=2, sharex=True, sharey=True)
+ax[0].set_title("Left Read", fontsize='small')
+ax[1].set_title("Right Read", fontsize='small')
+ax[0].set_xlabel("Position in Read", fontsize='small')
+ax[1].set_xlabel("Position in Read", fontsize='small')
+ax[0].set_ylabel("Base Frequency", fontsize='small')
+
+fig.suptitle("Per Base Nucleotide Composition for Paired-End Reads")
+labels = list(d.keys())
 
 for x in range(data.shape[0]):
     ax[x].set_ylim(0, 1)
+    ax[x].set_xticks(list(range(0, args.sequence_length, 10)))
+    ax[x].set_yticks([x/10 for x in range(0,11)])
     for y in range(data.shape[1]):
-        ax[x].step(np.arange(args.sequence_length), data[x, y, :])
+        ax[x].step(np.arange(args.sequence_length), data[x, y, :], label=labels[y])
+
+    # ax.xticks(fontsize=10, rotation=45)
+    for tick in ax[x].xaxis.get_major_ticks():
+        tick.label.set_fontsize(6)
+        tick.label.set_rotation(45)
+    for tick in ax[x].yaxis.get_major_ticks():
+        tick.label.set_fontsize(6)
+
+    ax[x].legend(fontsize='small', frameon=True)
 
 fig.savefig(f"{args.output_prefix}.png", dpi=300)
 plt.close(fig)
