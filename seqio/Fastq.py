@@ -1,3 +1,4 @@
+
 #! /usr/bin/env python3
 
 from seqio.Sequence import Sequence
@@ -6,8 +7,12 @@ from seqio.Sequence import Sequence
 class Fastq(object):
 
     def __init__(self, filename):
-        self.filename = filename
-        self.file = open(filename)
+        if type(filename) != str:
+            self.filename = filename.name
+            self.file = filename
+        else:
+            self.filename = filename
+            self.file = open(filename)
         self.data = []
         self.consumed = 0
         self.exhausted = False
@@ -54,8 +59,12 @@ class Fastq(object):
 class PairedFastq(object):
 
     def __init__(self, filename):
-        self.filename = filename
-        self.file = open(filename)
+        if type(filename) != str:
+            self.filename = filename.name
+            self.file = filename
+        else:
+            self.filename = filename
+            self.file = open(filename)
         self.data = []
         self.consumed = 0
         self.exhausted = False
